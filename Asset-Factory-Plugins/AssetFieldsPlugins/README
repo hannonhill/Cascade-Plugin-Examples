@@ -1,0 +1,116 @@
+Author: Brent Arrington
+Version: 1.0
+Version History:
+		- 1.0 Initial Version
+
+This is a fully functional Eclipse project containing two custom Asset Factory Plug-ins:
+
+The first plug-in is called AssetFieldsToSystemNamePlugin, and it allows Cascade 
+users to specify any combination of Metadata fields (Wired or Dynamic) and/or Data Definition fields as the 
+basis for an auto-generated system name for Page assets.  For Data Definition (structured data) fields, the 
+plugin supports: text fields, text areas, check boxes, multi-selects, drop-down menus, radio buttons, 
+calendar and date/time fields.  For multi-select and check box fields (which may contain multiple values) all 
+selected values for the field will be concatenated.  For calendar and date/time fields values will be 
+formatted as "yyyy-mm-dd".
+
+The second plug-in is called AssetFieldsToFolderStructurePlugin.  This plug-in allows for automated folder 
+placement of assets based on the values of specified Wired Metadata, Dynamic Metadata or Data Definition 
+fields.  For Data Definition (structured data) fields, the plugin supports: text fields, text areas, check 
+boxes, multi-selects, drop-down menus, radio buttons, calendar and date/time fields.  For multi-select and 
+check box fields (which may contain multiple values) only the first value encountered will be used.  For 
+calendar and date/time fields, values will be deconstructed into hierarchical directories based on the year, 
+month and day values of the specified date/time.
+
+AssetFieldsToFolderStructurePlugin accepts a comma-delimited list of metadata and/or structured data field 
+identifiers and attempts to map this to a corresponding directory structure to which to save the asset, 
+beginning with the placement folder of the asset in question.
+
+For example:
+
+With this plug-in added to an asset factory, configured with field identifiers 
+"start-date,dynamic-metadata/category," and field values of 12/12/2011 for start-date and "Awards" for 
+dynamic-metadata/category, and a "Placement Folder" setting of /news, the plug-in would attempt to place 
+the asset as follows:
+
+Beginning with the /news directory, the plug-in will first attempt to find a matching sub-directory structure 
+based on the components of the start-date value, beginning with the year. Date values are handled differently 
+from plain-text values in that the plug-in will parse the date & attempt to locate a hierarchical directory 
+structure based on the year, month and day values of the specified date field.
+
+It will first look for a directory named "2011" to match the year of the start-date
+
+If found, within the "2011" folder it will look for a directory matching the month of the start-date, using 
+any of the following variations: numeric month (i.e. "12"), abbreviated month name (i.e. "Dec" or "dec"), or 
+full month name (i.e. "December" or "december").
+
+If a month folder is found, the plug-in will look for the corresponding day folder within the month folder 
+(i.e. "12").
+
+After all of the components of the start-date value have been processed, the plug-in will look for a 
+sub-directory matching the dynamic-metadata/category field value (i.e. "Awards" or "awards").
+
+The end result would be that the asset would be placed in the /news/2011/12/12/awards directory 
+(or /news/2011/dec/12/awards directory, etc.).
+
+If at any point an anticipated directory structure is not found already existing within the selected 
+Placement Folder, that portion of the directory path is simply ignored. For example if no "day" folders 
+exist in the example above, the resulting asset path would be: /news/2011/12/awards or /news/2011/dec/awards. 
+
+Likewise, if neither day nor month folders existed, the resulting asset path would be: /news/2011/awards.
+
+The expected format of the field identifier Strings is as follows:
+
+Wired Metadata fields: [field-name] e.g. title,display-name,author
+
+Dynamic Metadata fields: [dynamic-metadata/field-name] e.g. dynamic-metadata/my-custom-field1,dynamic-metadata/my-custom-field2
+
+Structured Data (Data Definition) fields: [system-data-structure/{group-name}/field-name] e.g. system-data-structure/my-group/my-field,system-data-structure/my-ungrouped-field
+
+Pre-requisites:
+This article assumes you have the latest Java Runtime Enviornment (JRE) installed on your machine (required 
+by Eclipse). The JRE must be version 1.5 or later.  These plug-ins were written against the Cascade 6.7 API
+and are therefore compatible with version 6.7 and higher of Cascade Server.
+
+Collecting the tools:
+Before you get started, you should collect the tools you need to compile and export this plugin. Please 
+download the following two items:
+
+Eclipse IDE (http://www.eclipse.org)
+AssetFieldsPlugins Project (this project)
+
+
+Installing Eclipse and Opening the Project:
+Once you download Eclipse you will want to unzip it to a directory of your choosing (suggestions: 
+c:\java\eclipse or c:\Program Files\Eclipse on Windows, /usr/local/eclipse on Linux, 
+or ~/java/eclipse on OS X). Start Eclipse and you will be prompted to choose a workspace location - the 
+default location should suffice. Make note of it as this is the location to which we will unzip the Project.
+
+Next, you will unzip the Project ZIP file to your workspace directory. The zip should create it's own 
+directory inside your workspace directory.
+
+Finally we will bring the Plugin Project into Eclipse. To do this, right click in the package explorer view 
+on the left hand side and select "Import...". Then, select "Existing Projects into Workspace" under "General" 
+and click "Next". Select "Browse" next to "Select root directory:" and browse to the directory created when 
+you unzipped the SDK. You should then see "Asset Factory Plugin" under "Projects". Click "Finish".
+
+Generating JAR File and Importing into Cascade:
+First, create a JAR file containing this plug-in file and the resource bundle(s) it references. To do this, 
+right click on your project in the Package Explorer (left hand side) in Eclipse and select "Export...". Under 
+the "Java" section, select JAR file and click "Next". Next you will be prompted as to which files to include. 
+Ensure the project parent folder is checked and expand the project parent folder in the window to the left. 
+The checkbox next to the "src" and "doc" folders should be left unchecked while "src/java" should be checked. 
+If you click on your project parent folder, you will see on the right-hand side that other files, such as 
+".classpath" and ".project" are included, which are unnecessary and should be unchecked so they are not 
+included in the JAR. The rest of the default options should be fine (only things checked are "Export 
+generated class files and resources" and "Compress the contents of the JAR file"). Under "Select the export 
+destination:", select where the JAR file will be temporarily placed before deployment to Cascade Server. 
+Click Finish.
+
+To deploy the plug-ins JAR, first you must shut down Cascade Server. Next, locate the JAR file and place this 
+file in <Tomcat_Installation_Directory>/webapps/ROOT/WEB-INF/lib folder. JAR files placed in this location 
+are automatically loaded along with other libraries needed by Cascade Server. Once you have done this, start 
+Cascade Server and from the Global area, go to the Asset Factory section in the Administration area and 
+select Manage Plugins. In the "Add a Plugin" text field, enter the fully qualified Java class name of each 
+plug-in ("com.hannonhill.cascade.plugin.AssetFieldsToSystemNamePlugin" and 
+"com.hannonhill.cascade.plugin.AssetFieldsToFolderStructurePlugin") and click Submit after each. The plug-ins will 
+then be added and will be accessible in the "Plug-ins" tab when editing an Asset Factory.
