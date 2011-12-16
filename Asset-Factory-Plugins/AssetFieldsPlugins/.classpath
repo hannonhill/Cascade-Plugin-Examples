@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="assetfactory-plugin-6.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="cascade-api-6.7.jar"/>
+	<classpathentry kind="lib" path="/Users/barrington/Cascade/github/Cascade-Plugin-Examples/Asset-Factory-Plugins/AssetFieldsPlugins/assetfactory-plugin-6.7.jar"/>
+	<classpathentry kind="lib" path="/Users/barrington/Cascade/github/Cascade-Plugin-Examples/Asset-Factory-Plugins/AssetFieldsPlugins/cascade-api-6.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
