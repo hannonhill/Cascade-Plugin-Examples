@@ -68,8 +68,7 @@ Structured Data (Data Definition) fields: [system-data-structure/{group-name}/fi
 
 Pre-requisites:
 This article assumes you have the latest Java Runtime Enviornment (JRE) installed on your machine (required 
-by Eclipse). The JRE must be version 1.5 or later.  These plug-ins were written against the Cascade 6.7 API
-and are therefore compatible with version 6.7 and higher of Cascade Server.
+by Eclipse). The JRE must be version 1.5 or later.
 
 Collecting the tools:
 Before you get started, you should collect the tools you need to compile and export this plugin. Please 
